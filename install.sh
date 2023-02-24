@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-read -p "Please enter the golang version to be installed(default 1.20.1)：" VERSION
+read -p "Please enter the golang version to be installed(default 1.20.1):" VERSION
 
 # 如果VERSION为空，则默认为1.20.1
 if [ -z $VERSION ]; then
@@ -9,13 +9,14 @@ if [ -z $VERSION ]; then
 fi
 
 # 定义安装包的下载地址
+#https://go.dev/dl/go1.20.1.linux-amd64.tar.gz
 URL=https://go.dev/dl/go${VERSION}.linux-amd64.tar.gz
 
 # 定义安装目录
-INSTALL_DIR=~/go
+INSTALL_DIR=~
 
 # 下载安装包并解压到指定目录
-curl -O ${URL}
+wget $URL
 tar -C ${INSTALL_DIR} -xzf go${VERSION}.linux-amd64.tar.gz
 
 # 配置环境变量
@@ -27,7 +28,7 @@ rm -rf go${VERSION}.linux-amd64.tar.gz
 go version
 
 # 安装完成
-echo "Golang安装完成!"
+echo "Golang installed!"
 
 # 安装docker
 
@@ -43,8 +44,11 @@ sudo chmod +x /usr/local/bin/docker-compose
 docker version
 docker-compose version
 
+# 删除不需要的文件
+rm -rf get-docker.sh
+
 # 安装完成
-echo "Docker安装完成!"
+echo "Docker installed!"
 
 
 # 一键安装miniconda
@@ -63,7 +67,7 @@ PYTHON37=https://repo.anaconda.com/miniconda/Miniconda3-py37_23.1.0-1-Linux-x86_
 MINICONDA_URL=$PYTHON39
 
 # 读取用户输入的python版本
-read -p "Please enter the python version to be installed(default 1.20.1)：" READ_VERSION
+read -p "Please enter the python version to be installed(default 1.20.1):" READ_VERSION
 
 if [ $OS_TYPE == "Linux" ]; then
   if [ $READ_VERSION == "3.10" ]; then
