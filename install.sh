@@ -1,12 +1,12 @@
 #!/bin/bash
-
 set -e
 
-# 定义要安装的Go版本号
-VERSION=1.20.1
+read -p "Please enter the golang version to be installed(default 1.20.1)：" VERSION
 
-# 读取用户输入
-read -p "请输入要安装的Go版本号(默认1.20.1)：" VERSION
+# 如果VERSION为空，则默认为1.20.1
+if [ -z $VERSION ]; then
+  VERSION=1.20.1
+fi
 
 # 定义安装包的下载地址
 URL=https://go.dev/dl/go${VERSION}.linux-amd64.tar.gz
@@ -21,10 +21,8 @@ tar -C ${INSTALL_DIR} -xzf go${VERSION}.linux-amd64.tar.gz
 # 配置环境变量
 echo "export PATH=\$PATH:${INSTALL_DIR}/go/bin" >> /etc/profile
 source /etc/profile
-
 # 删除安装包
 rm -rf go${VERSION}.linux-amd64.tar.gz
-
 # 验证安装
 go version
 
@@ -65,7 +63,7 @@ PYTHON37=https://repo.anaconda.com/miniconda/Miniconda3-py37_23.1.0-1-Linux-x86_
 MINICONDA_URL=$PYTHON39
 
 # 读取用户输入的python版本
-read -p "请输入要安装的python版本号(默认3.9)：" READ_VERSION
+read -p "Please enter the python version to be installed(default 1.20.1)：" READ_VERSION
 
 if [ $OS_TYPE == "Linux" ]; then
   if [ $READ_VERSION == "3.10" ]; then
