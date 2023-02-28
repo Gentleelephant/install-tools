@@ -13,8 +13,8 @@ install_golang(){
    INSTALL_DIR=/usr/local
    wget $URL
    sudo tar -C ${INSTALL_DIR} -xzf go${VERSION}.linux-amd64.tar.gz
-   echo "export PATH=\$PATH:${INSTALL_DIR}/go/bin" >> /etc/profile
-   source /etc/profile
+   echo "export PATH=\$PATH:${INSTALL_DIR}/go/bin" >> ~/.bashrc
+   source ~/.bashrc
    rm -rf go${VERSION}.linux-amd64.tar.gz
    go version
    echo "Golang installed!"
@@ -69,14 +69,14 @@ install_miniconda(){
    curl -O $MINICONDA_URL
    MINICONDA_FILE=$(basename "$MINICONDA_URL")
    sh $MINICONDA_FILE -b -p /usr/local/miniconda
-   echo 'export PATH="/usr/local/miniconda/bin:$PATH"' >> /etc/profile
-   source /etc/profile
+   echo 'export PATH="/usr/local/miniconda/bin:$PATH"' >> ~/.bashrc
+   source ~/.bashrc
    conda --version
    echo "Miniconda installed!"
    rm -rf $MINICONDA_FILE
 }
 
-source /etc/profile
+source ~/.bashrc
 
 if command -v go >/dev/null 2>&1; then
   echo "golang already exists!Skin golang installation"
