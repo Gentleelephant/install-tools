@@ -94,22 +94,66 @@ install_miniconda() {
   rm -rf $MINICONDA_FILE
 }
 
+install_nodejs(){
+  if command -v node >/dev/null 2>&1; then
+    echo "nodejs already exists!Skin nodejs installation"
+    return
+  fi
+  ARCH_VERSION=""
+  URL=""
+  OS=""
+  if [ $ARCH == "aarch64" ]; then
+    ARCH_VERSION="arm64"
+  fi
+  if [ $ARCH == "x86_64" ]; then
+    ARCH_VERSION="x64"
+  fi
+  if [ $OS_TYPE == "Linux" ]; then
+      OS="linux"
+      URL=https://nodejs.org/dist/v18.14.2/node-v18.14.2-linux-x64.tar.xz
+  elif [ $OS_TYPE == "Darwin" ]; then
+      OS="darwin"
+      URL=https://nodejs.org/dist/v18.14.2/node-v18.14.2-darwin-${ARCH_VERSION}.tar.gz
+  else
+      echo "Unsupported OS"
+      exit 1
+  fi
+  INSTALL_DIR=/usr/local
+  wget $URL
+  # 如果文件格式是tar.xz就用命令解压
+  if [[ $URL == *.xz ]]; then
+    sudo tar -C ${INSTALL_DIR} -xJf node-v18.14.2-${OS}-${ARCH_VERSION}.tar.xz
+  else
+    sudo tar -C ${INSTALL_DIR} -xzvf node-v18.14.2-${OS}-${ARCH_VERSION}.tar.gz
+  fi
+#  sudo tar -C ${INSTALL_DIR} -xzf node-v18.14.2-${OS}-${ARCH_VERSION}.tar.gz
+  mv ${INSTALL_DIR}/node-v18.14.2-${OS}-${ARCH_VERSION} ${INSTALL_DIR}/node-v18.14.2
+  echo "export PATH=\$PATH:${INSTALL_DIR}/node-v18.14.2/bin" >>~/.bashrc
+  rm -rf node-v18.14.2-${OS}-${ARCH_VERSION}.tar.gz
+  /usr/local/node-v18.14.2/bin/node -v
+  echo "Nodejs installed!"
+}
+
 echo "OS_TYPE: $OS_TYPE"
 echo "ARCH: $ARCH"
 echo "Please select the software to be installed:"
 echo "1. golang"
 echo "2. docker"
 echo "3. miniconda"
-echo "4. all"
+echo "4. nodejs"
+echo "5. all"
 echo "Please enter the number of the software to be installed:"
 read -ra READ_NUM
 
 for element in "${READ_NUM[@]}"; do
-  if [[ "$element" == "4" ]]; then
+  if [[ "$element" == "5" ]]; then
     install_golang
     install_docker
     install_miniconda
+    install_nodejs
     break
+  elif [[ "$element" == "4" ]]; then
+    install_nodejs
   elif [[ "$element" == "3" ]]; then
     install_miniconda
   elif [[ "$element" == "2" ]]; then
@@ -124,4 +168,5 @@ done
 
 export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:/usr/local/miniconda/bin
+export PATH=$PATH:/usr/local/node-v18.14.2/bin
 source ~/.bashrc
