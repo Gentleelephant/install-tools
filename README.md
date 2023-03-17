@@ -3,5 +3,7 @@
 * docker
 * docker-compose
 * miniconda
+* nodejs
+* java
 ### install software
 `bash install.sh`

@@ -134,6 +134,37 @@ install_nodejs(){
   echo "Nodejs installed!"
 }
 
+
+function install_java() {
+    # 判断当前用户是否为root用户
+    if [ x"$USER" != x"root" ];then
+      echo "请使用root用户执行此脚本。"
+      exit 1
+    fi
+
+    # 设置Java安装路径
+    JAVA_HOME=/usr/local/java
+
+    # 创建安装目录
+    mkdir -p $JAVA_HOME
+
+    # 下载Java压缩包
+    JDK_URL="https://download.java.net/openjdk/jdk11/ri/openjdk-11+28_linux-x64_bin.tar.gz"
+    wget -O /tmp/openjdk-11+28_linux-x64_bin.tar.gz $JDK_URL
+
+    # 解压压缩包
+    tar -zxvf /tmp/openjdk-11+28_linux-x64_bin.tar.gz -C $JAVA_HOME --strip-components=1
+
+    # 配置环境变量
+    echo "export JAVA_HOME="$JAVA_HOME"" >> ~/.bashrc
+    echo "export PATH="$PATH:$JAVA_HOME/bin"" >> ~/.bashrc
+
+    # 验证是否安装成功
+    $JAVA_HOME/bin/java -version
+
+    echo "Java安装完成。"
+}
+
 echo "OS_TYPE: $OS_TYPE"
 echo "ARCH: $ARCH"
 echo "Please select the software to be installed:"
@@ -141,17 +172,20 @@ echo "1. golang"
 echo "2. docker"
 echo "3. miniconda"
 echo "4. nodejs"
-echo "5. all"
+echo "5. java"
+echo "6. all"
 echo "Please enter the number of the software to be installed:"
 read -ra READ_NUM
 
 for element in "${READ_NUM[@]}"; do
-  if [[ "$element" == "5" ]]; then
+  if [[ "$element" == "6" ]]; then
     install_golang
     install_docker
     install_miniconda
     install_nodejs
     break
+  elif [[ "$element" == "5" ]]; then
+    install_java
   elif [[ "$element" == "4" ]]; then
     install_nodejs
   elif [[ "$element" == "3" ]]; then
@@ -169,4 +203,6 @@ done
 export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:/usr/local/miniconda/bin
 export PATH=$PATH:/usr/local/node-v18.14.2/bin
+export JAVA_HOME=$JAVA_HOME
+export PATH=$PATH:$JAVA_HOME/bin
 source ~/.bashrc
